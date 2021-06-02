@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<!--[if lt IE 8 ]><html class="no-js ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="no-js ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 8)|!(IE)]><!--><html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+
+   <!--- Basic Page Needs
+   ================================================== -->
+   <meta charset="utf-8">
+	<title>Exploiting the Arcade ticket-counter</title>
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+   <!-- Mobile Specific Metas
+   ================================================== -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<!-- CSS
+    ================================================== -->
+   <link rel="stylesheet" href="css/default.css">
+	<link rel="stylesheet" href="css/layout.css">
+   <link rel="stylesheet" href="css/media-queries.css">
+
+   <!-- Script
+   ================================================== -->
+	<script src="js/modernizr.js"></script>
+
+   <!-- Favicons
+	================================================== -->
+	<link rel="shortcut icon" href="favicon.ico" >
+
+</head>
+
+<body>
+
+   <!-- Header
+   ================================================== -->
+   <header>
+
+      <div class="row">
+
+         <div class="twelve columns">
+
+            <div class="logo">
+               <a href="index.html"><img alt="" src="images/logo.png"></a>
+            </div>
+
+            <nav id="nav-wrap">
+
+               <a class="mobile-btn" href="#nav-wrap" title="Show navigation">Show navigation</a>
+	            <a class="mobile-btn" href="#" title="Hide navigation">Hide navigation</a>
+
+               <ul id="nav" class="nav">
+
+                 <li><a href="index.html">Home</a></li>
+                 <li class="current"><span><a href="blog.html">Blog</a></span>
+                     <ul>
+                        <li><a href="blog.html">Blog Index</a></li>
+                        <li><a href="blog_ticket_machine.html">Post</a></li>
+                     </ul>
+                  </li>
+
+                 <li><a href="about.html">About</a></li>
+                  <li><a href="contact.html">Contact</a></li>
+
+               </ul> <!-- end #nav -->
+
+            </nav> <!-- end #nav-wrap -->
+
+         </div>
+
+      </div>
+
+   </header> <!-- Header End -->
+
+   <!-- Page Title
+   ================================================== -->
+   <div id="page-title">
+
+      <div class="row">
+
+         <div class="ten columns centered text-center">
+            <h1>Idlehax's Tech Blog<span>.</span></h1>
+
+            <p> Let's see where our mind takes us today</p>
+         </div>
+
+      </div>
+
+   </div> <!-- Page Title End-->
+
+   <!-- Content
+   ================================================== -->
+   <div class="content-outer">
+
+      <div id="page-content" class="row">
+
+         <div id="primary" class="eight columns">
+
+            <article class="post">
+
+               <div class="entry-header cf">
+
+                  <h1>A handfull of hardware and a little critical thinking can accomplish anything. In this case, it's infinite tickets
+                     at the local arcade...</h1>
+
+                  <p class="post-meta">
+
+                     <time class="date" datetime="2021-06-01T20:24">June 1, 2021</time>
+                     /
+                     <span class="categories">
+                     <a href="#">Exploiting</a> /
+                     <a href="#">Microprocessors</a> /
+                     <a href="#">Mathmatics</a>
+                     </span>
+
+                  </p>
+
+               </div>
+
+               <div class="post-thumb">
+                  <img src="images/post-image/post-image-1300x500-01.jpg" alt="post-image" title="post-image">
+               </div>
+
+               <div class="post-content">
+
+                  <p class="lead">One day I found myself wondering about the technology behind the ticket counting machines at my 
+                     local arcade and if they were vulnerable to some form of exploitation. The first step for me was to come up
+                     with some theories about how these machines work and then put them to the test. I collected a sample
+                     of tickets and thought about their design. Was there anything about them that seems particularly
+                     conducive to one type of counting mechanism? What stood out to me most was the hole in the center
+                     of every pair if tickets. The machines were labeled that they were unable to count single tickets, 
+                     So i began to assume the reason for this was that it takes at least two connected tickets to make a
+                     clean circle on the strip. I then considered how I might make use of this to count tickets rapidly if 
+                     I were the designer. I thought that an IR emitter that shines through the holes as the tickets pass,
+                     but that is unable to shine through the solid paper would generate a square wave in an IR reciever that
+                     would be fairly easy to work with. This was also an easy theory to test. A smartphone camera is able to
+                     pick up most IR light in applications like this. I proceded to inspect several of these ticket counting
+                     machines and came to the conclusion that about half of the ones at my local arcade did in fact use
+                     this IR light method. </p>
+
+                  <p> The next step was to figure out both how often and how long the pulses of light would be striking
+                  the reciever. I used a simple phone app which recorded video with an on-screen timer, similar to old home
+                  VHS video recorders. I took the duration of time for 100 tickets to be counted and divided that to get a nice
+                  reliable average for a single ticket. I then used a set of calipers to measure the length of the solid and
+                  empty space going down the center of a single ticket. I used these lengths to calculate the exact ratio 
+                  of time light could and could not shine on the reciever per ticket, and multiplied each by the time I
+                  Had calculated earlier. I now had an exact cycle in milliseconds that the light would have to be pulsed in order
+                   to "spoof" tickets being fed in.</p>
+
+                  <p>The last step was to make some hardware to do this. Luckily, making an LED blink is probably the
+                     simplest task one could accomplish with a microcontroller. I opted to use a circuit python based unit from
+                     Adafruit for it's tiny form-factor and ease of use. I quickly ran into an issue with this however. The IR
+                     LEDs I purchased for this project demanded far more amperage than the microcontroller could supply over the 5 volts everything was using. 
+                    I ended up using the microcontroller to instead switch a mosfet open and closed, with this governing the positive
+                     connection directly from the 5 volt power regulator circuit I purchased from Adafruit as a finished IC. A small resistor was added in series with
+                     the LED to keep anything from popping, And all that  was left was to test it.</p>
+
+                  <p>Surprisingly this setup was all that was needed to get the machines to continue to count "Ghost tickets" after feeding in a few
+                     to activate a switch inside that turns all of it's componants on. a strip of two tickets could be used to get approxiately 30 seconds worth
+                     of continious "Ghost tickets" before the machine stopped powering the componants needed for the counting to happen,
+                     indicating that the LED emitter/recievier combo stayed powered off until needed to save power and thus couldn't be counten on to activate the machine.
+                     At the end of the day, I got exactly what I had come for, the satisfaction of outsmarting someone else at their own
+                     game (in this case literally). I printed out my illicit ticket reciept and threw it away. After all, history has taught us that printing money without
+                     goods to back it devalues the currency, And I refuse to be responsible for the staple "1 ticket tootsie rolls" being a thing of the
+                     past.</p>
+
+                  <p class="tags">
+  			            <span>Tagged in </span>:
+  				         <a href="#">exploiting</a>, <a href="#">microcontrollers</a>, <a href="#">math</a>
+  			         </p>
+
+                  <div class="bio cf">
+
+                     <div class="gravatar">
+                        <img src="images/author-img.png" alt="">
+                     </div>
+                     <div class="about">
+                        <h5><a title="Posts by Idlehax" href="#" rel="author">Idlehax</a></h5>
+                        <p>"Idlehax" is a handle I use when programming, writing, and contributing to projects across the web.
+                            I work in the technology field professionally and am entirely self-instructed. I use this blog
+                             as both a hub for various solo and community projects as well as a portfolio.
+                        </p>
+                     </div>
+
+                  </div>
+
+                  <ul class="post-nav cf">
+  			            <li class="prev"><a rel="prev" href="#"><strong>Previous Article</strong> Duis Sed Odio Sit Amet Nibh Vulputate</a></li>
+  				         <li class="next"><a rel="next" href="#"><strong>Next Article</strong> Morbi Elit Consequat Ipsum</a></li>
+  			         </ul>
+
+               </div>
+
+            </article> <!-- post end -->
+
+
+
+         </div>
+
+         <div id="secondary" class="four columns end">
+
+            <aside id="sidebar">
+
+               <div class="widget widget_search">
+                  <h5>Search</h5>
+                  <form action="#">
+
+                     <input class="text-search" type="text" onfocus="if (this.value == 'Search here...') { this.value = ''; }" onblur="if(this.value == '') { this.value = 'Search here...'; }" value="Search here...">
+                     <input type="submit" class="submit-search" value="">
+
+                  </form>
+               </div>
+
+               <div class="widget widget_text">
+                  <h5 class="widget-title">Text Widget</h5>
+                  <div class="textwidget">Proin gravida nibh vel velit auctor aliquet.
+                  Aenean sollicitudin, lorem quis bibendum auctor, nisi elit consequat ipsum,
+                  nec sagittis sem nibh id elit. Duis sed odio sit amet nibh vulputate cursus
+                  a sit amet mauris. Morbi accumsan ipsum velit. </div>
+		         </div>
+
+               <div class="widget widget_categories">
+                  <h5 class="widget-title">Categories</h5>
+                  <ul class="link-list cf">
+                     <li><a href="#">Designs</a></li>
+                     <li><a href="#">Internet</a></li>
+                     <li><a href="#">Typography</a></li>
+                     <li><a href="#">Photography</a></li>
+                     <li><a href="#">Web Development</a></li>
+                     <li><a href="#">Projects</a></li>
+                     <li><a href="#">Other Stuff</a></li>
+                  </ul>
+               </div>
+
+               <div class="widget widget_tag_cloud">
+                  <h5 class="widget-title">Tags</h5>
+                  <div class="tagcloud cf">
+                     <a href="#">drupal</a>
+                     <a href="#">joomla</a>
+                     <a href="#">ghost</a>
+                     <a href="#">wordpress</a>
+                  </div>
+               </div>
+
+               <div class="widget widget_photostream">
+                  <h5>Photostream</h5>
+                  <ul class="photostream cf">
+                     <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
+                     <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
+                     <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
+                     <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
+                     <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
+                     <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
+                     <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
+                     <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
+                  </ul>
+	            </div>
+
+            </aside> <!-- Sidebar End -->
+
+         </div> <!-- Comments End -->
+
+      </div>
+
+   </div> <!-- Content End-->
+
+
+
+   <!-- footer
+   ================================================== -->
+   <footer>
+
+      <div class="row">
+
+         <div class="twelve columns">
+
+            <ul class="footer-nav">
+          <li><a href="#">Home.</a></li>
+                <li><a href="#">Blog.</a></li>
+                <li><a href="#">About.</a></li>
+                <li><a href="#">Contact.</a></li>
+         </ul>
+          <!-- social media tie-ins to activate later maybe
+            <ul class="footer-social">
+               <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+               <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+               <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+               <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+               <li><a href="#"><i class="fa fa-skype"></i></a></li>
+               <li><a href="#"><i class="fa fa-rss"></i></a></li>
+            </ul>
+          -->
+            <ul class="copyright">
+               <li>Copyright &copy; 2020 IdleHax</li>
+               <li>Design by <a href="http://www.styleshout.com/">Styleshout</a></li>
+            </ul>
+
+         </div>
+
+         <div id="go-top" style="display: block;"><a title="Back to Top" href="#">Go To Top</a></div>
+
+      </div>
+
+   </footer> <!-- Footer End-->
+
+   <!-- Java Script
+   ================================================== -->
+   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+   <script>window.jQuery || document.write('<script src="js/jquery-1.10.2.min.js"><\/script>')</script>
+   <script type="text/javascript" src="js/jquery-migrate-1.2.1.min.js"></script>
+
+   <script src="js/jquery.flexslider.js"></script>
+   <script src="js/doubletaptogo.js"></script>
+   <script src="js/init.js"></script>
+
+
+</body>
+
+</html>
