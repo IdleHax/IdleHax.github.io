@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<!--[if lt IE 8 ]><html class="no-js ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="no-js ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 8)|!(IE)]><!--><html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+
+   <!--- Basic Page Needs
+   ================================================== -->
+   <meta charset="utf-8">
+	<title>The case of the forgotten Wifi password or, Air-crack in a can</title>
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+   <!-- Mobile Specific Metas
+   ================================================== -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<!-- CSS
+    ================================================== -->
+   <link rel="stylesheet" href="css/default.css">
+	<link rel="stylesheet" href="css/layout.css">
+   <link rel="stylesheet" href="css/media-queries.css">
+
+   <!-- Script
+   ================================================== -->
+	<script src="js/modernizr.js"></script>
+
+   <!-- Favicons
+	================================================== -->
+	<link rel="shortcut icon" href="favicon.ico" >
+
+</head>
+
+<body>
+
+   <!-- Header
+   ================================================== -->
+   <header>
+
+      <div class="row">
+
+         <div class="twelve columns">
+
+            <div class="logo">
+               <a href="index.html"><img alt="" src="images/logo.png"></a>
+            </div>
+
+            <nav id="nav-wrap">
+
+               <a class="mobile-btn" href="#nav-wrap" title="Show navigation">Show navigation</a>
+	            <a class="mobile-btn" href="#" title="Hide navigation">Hide navigation</a>
+
+               <ul id="nav" class="nav">
+
+                 <li><a href="index.html">Home</a></li>
+                 <li class="current"><span><a href="blog.html">Blog</a></span>
+                     <ul>
+                        <li><a href="blog.html">Blog Index</a></li>
+                     </ul>
+                  </li>
+
+                 <li><a href="about.html">About</a></li>
+                  <li><a href="contact.html">Contact</a></li>
+
+               </ul> <!-- end #nav -->
+
+            </nav> <!-- end #nav-wrap -->
+
+         </div>
+
+      </div>
+
+   </header> <!-- Header End -->
+
+   <!-- Page Title
+   ================================================== -->
+   <div id="page-title">
+
+      <div class="row">
+
+         <div class="ten columns centered text-center">
+            <h1>Idlehax's Tech Blog<span>.</span></h1>
+
+            <p> Let's see where our mind takes us today</p>
+         </div>
+
+      </div>
+
+   </div> <!-- Page Title End-->
+
+   <!-- Content
+   ================================================== -->
+   <div class="content-outer">
+
+      <div id="page-content" class="row">
+
+         <div id="primary" class="eight columns">
+
+            <article class="post">
+
+               <div class="entry-header cf">
+
+                  <h1>Cracking Wifi passwords like a low-budget James Bond</h1>
+
+                  <p class="post-meta">
+
+                     <time class="date" datetime="2021-06-02T18:53">June 1, 2021</time>
+                     /
+                     <span class="categories">
+                     <a href="#">Exploiting</a> /
+                     <a href="#">Wifi</a> /
+                     <a href="#">Soldering</a>
+                     </span>
+
+                  </p>
+
+               </div>
+
+               <div class="post-thumb">
+                  <img src="images/post-image/post-image-1300x500-01.jpg" alt="post-image" title="post-image">
+               </div>
+
+               <div class="post-content">
+
+                  <p class="lead">It was a regular day in the life of being the "techie" of our local circle of freinds.
+                     As per the usual, when a problem arose with anything that plugs into the wall, I was
+                     consulted. In this case the password to a home wireless network that had been recently changed
+                     had also been recently forgotten. The path of least resistance would simply be to hard-reset
+                     the offending router, as the administrative credentials had been changed from default during
+                     the initial setup. Since so too was the administrative login abandoned somewhere in time - much
+                     like i had done with the path of least resistance, I decided this was a perfect opportunity for
+                     a new project. </p>
+
+                  <p>My initial goal here was to make a small device capable of capturing the WPA2 handshake
+                     i would need to crack the hash corresponding to the forgotten password. I felt that in the interest
+                     of the general cool factor of the project that i would make it appear as an everyday object with
+                     a hidden display indicating when a handshake had been captured. Although there have been countless
+                     projects on the web to make aircrack more portable, including the very interesting pwnagotchi project,
+                     I wanted to make something from scratch that would be a relatively easy win. In the end, the actual
+                     build time from start to finish was about three hours.</p>
+
+                  <p>The first step was to decide on hardware. I felt the best case for the project was the
+                     classic standby - an altoids tin. This would keep the project inconspicuous and make for a nice
+                     pocketable finished form factor with ample space for battery power. To keep things simple, I used
+                     a RasberryPi Zero (without headers to keep things compact). The display was a simple LCD module from
+                     Amazon with header pins directly on the PCB. For power, I took the Adafruit powerboost IC from
+                     the last project I had completed. I had a big bag of tiny dc toggle switches in the parts drawer, along
+                     with a random assortment of Li-ion batteries. A bit of silicone wire and some kapton tape wrapped up
+                     the list of supplies I'd be using.</p>
+
+                  <p>I first applied a strip of kapton tape across the back of the Pi Zero to make me feel a little better
+                     about sandwiching two PCBs together, making sure none of The I/O holes were covered. I then lined up all the
+                     corresponding pins of the display module with the pi and soldered them in place. I soldered in two leads
+                     from the 5 volt and ground pins on the pi/display combo and broke the positive lead with a small toggle switch
+                     I mounted on the back of the tin. The leads were soldered to the power supply circuit, and I selected two li-ion
+                     battery packs that would fit beside the rest of the components to the left and right and supply a total of
+                     2000mah to keep things going as long as need be.</p>
+
+                  <p>With the hardware wrapped up, I decided to start with the headless version of raspbian to keep
+                     memory consumption to a minimum. Raspi-config was still included in this version which meant configuring
+                     a wireless connection was painless. Using aptitude I installed the aircrack suite of tools and all the
+                     dependancies which were convieniently in the default repositories and required no additional configuration.
+                     I used nano to then write a super simple bash script calling airmon check kill to stop any processes which
+                     may interfere with aircrack, setting the wireless adapter to monitor mode, then starting airdump to begin
+                     recording any handshakes it encounters. The script was given full chmod permissions and placed in usr/share.
+                     the filename was then added to the init file to be launched at start</p>
+
+                  <p class="tags">
+  			            <span>Tagged in </span>:
+  				         <a href="#">exploiting</a>, <a href="#">microcontrollers</a>, <a href="#">math</a>
+  			         </p>
+
+                  <div class="bio cf">
+
+                     <div class="gravatar">
+                        <img src="images/author-img.png" alt="">
+                     </div>
+                     <div class="about">
+                        <h5><a title="Posts by Idlehax" href="#" rel="author">Idlehax</a></h5>
+                        <p>"Idlehax" is a handle I use when programming, writing, and contributing to projects across the web.
+                            I work in the technology field professionally and am entirely self-instructed. I use this blog
+                             as both a hub for various solo and community projects as well as a portfolio.
+                        </p>
+                     </div>
+
+                  </div>
+
+                  <ul class="post-nav cf">
+  			            <li class="prev"><a rel="prev" href="#"><strong>Previous Article</strong> Duis Sed Odio Sit Amet Nibh Vulputate</a></li>
+  				         <li class="next"><a rel="next" href="#"><strong>Next Article</strong> Morbi Elit Consequat Ipsum</a></li>
+  			         </ul>
+
+               </div>
+
+            </article> <!-- post end -->
+
+
+
+         </div>
+
+         <div id="secondary" class="four columns end">
+
+            <aside id="sidebar">
+
+               <div class="widget widget_search">
+                  <h5>Search</h5>
+                  <form action="#">
+
+                     <input class="text-search" type="text" onfocus="if (this.value == 'Search here...') { this.value = ''; }" onblur="if(this.value == '') { this.value = 'Search here...'; }" value="Search here...">
+                     <input type="submit" class="submit-search" value="">
+
+                  </form>
+               </div>
+
+               <div class="widget widget_text">
+                  <h5 class="widget-title">Text Widget</h5>
+                  <div class="textwidget">Proin gravida nibh vel velit auctor aliquet.
+                  Aenean sollicitudin, lorem quis bibendum auctor, nisi elit consequat ipsum,
+                  nec sagittis sem nibh id elit. Duis sed odio sit amet nibh vulputate cursus
+                  a sit amet mauris. Morbi accumsan ipsum velit. </div>
+		         </div>
+
+               <div class="widget widget_categories">
+                  <h5 class="widget-title">Categories</h5>
+                  <ul class="link-list cf">
+                     <li><a href="#">Designs</a></li>
+                     <li><a href="#">Internet</a></li>
+                     <li><a href="#">Typography</a></li>
+                     <li><a href="#">Photography</a></li>
+                     <li><a href="#">Web Development</a></li>
+                     <li><a href="#">Projects</a></li>
+                     <li><a href="#">Other Stuff</a></li>
+                  </ul>
+               </div>
+
+               <div class="widget widget_tag_cloud">
+                  <h5 class="widget-title">Tags</h5>
+                  <div class="tagcloud cf">
+                     <a href="#">drupal</a>
+                     <a href="#">joomla</a>
+                     <a href="#">ghost</a>
+                     <a href="#">wordpress</a>
+                  </div>
+               </div>
+
+               <div class="widget widget_photostream">
+                  <h5>Photostream</h5>
+                  <ul class="photostream cf">
+                     <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
+                     <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
+                     <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
+                     <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
+                     <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
+                     <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
+                     <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
+                     <li><a href="#"><img src="images/thumb.jpg" alt="thumbnail"></a></li>
+                  </ul>
+	            </div>
+
+            </aside> <!-- Sidebar End -->
+
+         </div> <!-- Comments End -->
+
+      </div>
+
+   </div> <!-- Content End-->
+
+
+
+   <!-- footer
+   ================================================== -->
+   <footer>
+
+      <div class="row">
+
+         <div class="twelve columns">
+
+            <ul class="footer-nav">
+          <li><a href="#">Home.</a></li>
+                <li><a href="#">Blog.</a></li>
+                <li><a href="#">About.</a></li>
+                <li><a href="#">Contact.</a></li>
+         </ul>
+          <!-- social media tie-ins to activate later maybe
+            <ul class="footer-social">
+               <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+               <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+               <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+               <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+               <li><a href="#"><i class="fa fa-skype"></i></a></li>
+               <li><a href="#"><i class="fa fa-rss"></i></a></li>
+            </ul>
+          -->
+            <ul class="copyright">
+               <li>Copyright &copy; 2020 IdleHax</li>
+               <li>Design by <a href="http://www.styleshout.com/">Styleshout</a></li>
+            </ul>
+
+         </div>
+
+         <div id="go-top" style="display: block;"><a title="Back to Top" href="#">Go To Top</a></div>
+
+      </div>
+
+   </footer> <!-- Footer End-->
+
+   <!-- Java Script
+   ================================================== -->
+   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+   <script>window.jQuery || document.write('<script src="js/jquery-1.10.2.min.js"><\/script>')</script>
+   <script type="text/javascript" src="js/jquery-migrate-1.2.1.min.js"></script>
+
+   <script src="js/jquery.flexslider.js"></script>
+   <script src="js/doubletaptogo.js"></script>
+   <script src="js/init.js"></script>
+
+
+</body>
+
+</html>
